@@ -13,20 +13,21 @@ DATA_URL = (
     "https://raw.githubusercontent.com/jbrownlee/Datasets/master/pima-indians-diabetes.csv"
 )
 
+
 def load_data(
     data_url: str = DATA_URL,
     cache_path: Path = Path("data/diabetes.csv"),
     ) -> pd.DataFrame:
 
     if cache_path.exists():
-        return pd.read_csv(cache_path, sep=";")
+        return pd.read_csv(cache_path, sep=",")
     
-    df = pd.read_csv(data_url, sep=";")
+    df = pd.read_csv(data_url, sep=",")
     
-    #Si la carpeta data no existiera la crea por defecto
+    # Si la carpeta data no existiera la crea por defecto
     cache_path.parent.mkdir(parents=True, exist_ok=True)
     
-    df.to_csv(cache_path, index=False, sep=";")
+    df.to_csv(cache_path, index=False, sep=",")
     
     #Retorna finalmente el dataframe
     return df

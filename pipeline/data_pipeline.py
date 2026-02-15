@@ -4,7 +4,7 @@ import pandas as pd
 from sklearn.compose import ColumnTransformer #Lo que haces es tranformas las columnas que yo le diga de acuerdo a tales parametros
 from sklearn.impute import SimpleImputer # Manejar valores faltantes
 from sklearn.pipeline import Pipeline  # encadena pasos: paso1 → paso2 → paso3 (ej. imputer → scaler)
-from sklearn.linear_model import LogisticRegression # regresiión lineal
+from sklearn.linear_model import LogisticRegression
 from sklearn.preprocessing import StandardScaler # Se usa para poner las variables en un rango similar
 
 
@@ -42,4 +42,49 @@ def split_features_target(
     y = df[target]
     
     return x, y
+
+
+#Funcion para construir el Pipeline
+def built_pipeline(numeric_features: list[str]) -> Pipeline:
+    
+    numeric_transformer = Pipeline(
+        steps=[
+            (
+                "imputer", SimpleImputer(strategy="median")
+            ),
+            (
+                "scaler", StandardScaler()
+            ),
+                
+        ]
+    )
+    
+    preprocessor = ColumnTransformer(
+        transformers=[
+            (
+                "num",
+                numeric_transformer,
+                numeric_features
+            )
+        ],
+        remainder="drop"  # Columnas que no tienen importancia, eliminarlas
+    )
+    
+    #clase de scikit-learn para clasificación binaria, Predice probabilidades y luego una clase (por ejemplo 0 o 1).
+    model = LogisticRegression(
+        max_iter=1000,
+        random_state=42,
+        C=1.0,  # inverso de la regularización; menor = más regularización
+    )
+    
+    pipeline = Pipeline(
+        steps=[
+        ("preprocess", preprocessor),
+        ("model", model)
+        ]
+    )
+    
+    return pipeline
+
+    
 
